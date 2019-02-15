@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Ground
   - Spike
+  - Coin
+  - Key
   layers:
   - Default
   - TransparentFX
@@ -16,6 +18,7 @@ TagManager:
   - 
   - 
   - Ground
+  - Door
   - 
   - 
   - 
@@ -23,8 +26,7 @@ TagManager:
   - 
   - 
   - 
-  - 
-  - 
+  - Player
   - 
   - 
   - 
@@ -42,4 +44,13 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Ground
+    uniqueID: 3931855739
+    locked: 0
+  - name: Door
+    uniqueID: 3884045107
+    locked: 0
+  - name: Player
+    uniqueID: 3713867457
     locked: 0

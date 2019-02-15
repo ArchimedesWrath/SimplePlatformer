@@ -5,20 +5,29 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour {
 	public Animator animator;
 	public GameObject currentSpawn;
+	public GameObject Key;
 	public Transform GroundCheck;
 	public LayerMask groundLayer;
 	float speed = 250f;
 	float jumpHeight = 500f;
 	public bool jump = false;
 	public bool grounded;
-	public bool facingRight = true;
+	bool facingRight = true;
 	Rigidbody2D rb;
 	float xaxis;
 	float yaxis;
 
+	// Double Jump variables
+	public bool doubleJump = false;
+
+	// Key Logic
+	public bool hasKey = false;
+
 	// Use this for initialization
-	void Start () {
+	void Awake () {
 		rb = gameObject.GetComponent<Rigidbody2D>();
+		animator = gameObject.transform.GetChild(0).gameObject.GetComponent<Animator>();
+		
 	}
 
 	void Update() {
@@ -29,6 +38,20 @@ public class PlayerController : MonoBehaviour {
 		SetAnimationVariables();
 
 		if(yaxis > 0) jump = true;
+		if (Input.GetKeyDown(KeyCode.W) && doubleJump && !grounded) {
+			Vector2 velY = rb.velocity;
+			velY.y = jumpHeight * yaxis * Time.deltaTime;
+			rb.velocity = velY;
+			jump = false;
+			doubleJump = false;
+		}
+
+		if (rb.velocity.y > 9.5f) {
+			Vector2 velY = rb.velocity;
+			velY.y = 9.5f;
+			rb.velocity = velY;
+		}
+		
 	}
 	
 	// Update is called once per frame
@@ -50,7 +73,7 @@ public class PlayerController : MonoBehaviour {
 			rb.velocity = velY;
 			jump = false;
 			grounded = false;
-		} else if (jump && !grounded) {
+		} else if (jump && !grounded && !doubleJump) {
 			jump = false;
 		}
 
@@ -66,9 +89,9 @@ public class PlayerController : MonoBehaviour {
 	void Flip() {
 		facingRight = !facingRight;
 
-		Vector3 _Scale = transform.localScale;
+		Vector3 _Scale = transform.GetChild(0).transform.localScale;
 		_Scale.x *= -1;
-		transform.localScale = _Scale;
+		transform.GetChild(0).transform.localScale = _Scale;
 	}
 
 	void SetAnimationVariables() {
@@ -96,17 +119,45 @@ public class PlayerController : MonoBehaviour {
 		rb.velocity = Vector2.zero;
 		jump = false;
 		grounded = false;
-		Vector3 _Scale = transform.localScale;
+		Vector3 _Scale = transform.GetChild(0).transform.localScale;
 		_Scale.x = 1;
-		transform.localScale = _Scale;
+		transform.GetChild(0).transform.localScale = _Scale;
 		facingRight = true;
 		transform.position = currentSpawn.transform.position;
 	}
 
-	void OnCollisionEnter2D(Collision2D coll) {
-		if (coll.gameObject.name == "Spikes") {
+	bool PickUpKey(GameObject key) {
+		if (!hasKey) {
+			hasKey = true;
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public void UseKey() {
+		hasKey = false;
+		gameObject.transform.GetChild(2).GetComponent<Key>().Use();
+	}
+
+	void OnCollisionEnter2D(Collision2D col) {
+		if (col.gameObject.name == "Spikes") {
 			// TODO: Make some death and spawn Particles.
 			Die();
 		}
+	}
+
+	void OnTriggerEnter2D(Collider2D col) {
+		if (col.gameObject.tag == "Coin") {
+			if (!doubleJump) {
+				doubleJump = true;
+				Destroy(col.gameObject);
+			}
+		} else if (col.gameObject.tag == "Key") {
+			if (PickUpKey(col.gameObject)) {
+				//Destroy(col.gameObject);
+				col.gameObject.transform.SetParent(gameObject.transform);
+			}
+		} 
 	}
 }
