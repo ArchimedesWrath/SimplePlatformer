@@ -7,6 +7,7 @@ public class PlayerController : MonoBehaviour {
 	public GameObject currentSpawn;
 	public GameObject Key;
 	public Transform GroundCheck;
+	public Transform KeyHoldPoint;
 	public LayerMask groundLayer;
 	float speed = 250f;
 	float jumpHeight = 500f;
@@ -23,7 +24,9 @@ public class PlayerController : MonoBehaviour {
 	// Key Logic
 	public bool hasKey = false;
 
-	// Use this for initialization
+	// Going through door logic
+	public bool isInDoor = false;
+
 	void Awake () {
 		rb = gameObject.GetComponent<Rigidbody2D>();
 		animator = gameObject.transform.GetChild(0).gameObject.GetComponent<Animator>();
@@ -50,6 +53,11 @@ public class PlayerController : MonoBehaviour {
 			Vector2 velY = rb.velocity;
 			velY.y = 9.5f;
 			rb.velocity = velY;
+		}
+
+		if (Input.GetKeyDown(KeyCode.E) && isInDoor) {
+			// Go to the otherside of door?
+			//UseDoor();
 		}
 		
 	}
@@ -89,9 +97,9 @@ public class PlayerController : MonoBehaviour {
 	void Flip() {
 		facingRight = !facingRight;
 
-		Vector3 _Scale = transform.GetChild(0).transform.localScale;
+		Vector3 _Scale = transform.localScale;
 		_Scale.x *= -1;
-		transform.GetChild(0).transform.localScale = _Scale;
+		transform.localScale = _Scale;
 	}
 
 	void SetAnimationVariables() {
@@ -119,9 +127,9 @@ public class PlayerController : MonoBehaviour {
 		rb.velocity = Vector2.zero;
 		jump = false;
 		grounded = false;
-		Vector3 _Scale = transform.GetChild(0).transform.localScale;
+		Vector3 _Scale = transform.localScale;
 		_Scale.x = 1;
-		transform.GetChild(0).transform.localScale = _Scale;
+		transform.localScale = _Scale;
 		facingRight = true;
 		transform.position = currentSpawn.transform.position;
 	}
@@ -137,7 +145,11 @@ public class PlayerController : MonoBehaviour {
 
 	public void UseKey() {
 		hasKey = false;
-		gameObject.transform.GetChild(2).GetComponent<Key>().Use();
+		Key.GetComponent<Key>().Use();
+	}
+
+	void UseDoor() {
+
 	}
 
 	void OnCollisionEnter2D(Collision2D col) {
@@ -155,9 +167,17 @@ public class PlayerController : MonoBehaviour {
 			}
 		} else if (col.gameObject.tag == "Key") {
 			if (PickUpKey(col.gameObject)) {
-				//Destroy(col.gameObject);
-				col.gameObject.transform.SetParent(gameObject.transform);
+				col.gameObject.GetComponent<Key>().PickUp(KeyHoldPoint);	
+				Key = col.gameObject;
 			}
-		} 
+		} else if (col.gameObject.tag == "Door") {
+			isInDoor = true;
+		}
+	}
+
+	void OnTriggerExit2D(Collider2D col) {
+		if (col.gameObject.tag == "Door") {
+			isInDoor = false;
+		}
 	}
 }
