@@ -11,6 +11,7 @@ public class DoorLocked : MonoBehaviour
     void SpawnDoor() {
         GameObject _door = Instantiate(UnlockedDoor, transform.position, transform.rotation);
         _door.GetComponent<Door>().SetLinkedDoor(LinkedDoor);
+        LinkedDoor.GetComponent<Door>().SetLinkedDoor(_door);
         Destroy(gameObject);
     } 
 

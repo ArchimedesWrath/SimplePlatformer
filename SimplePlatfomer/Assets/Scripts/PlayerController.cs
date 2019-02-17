@@ -26,6 +26,10 @@ public class PlayerController : MonoBehaviour {
 
 	// Going through door logic
 	public bool isInDoor = false;
+	GameObject Door;
+
+	//Particles 
+	public GameObject DeathParticle;
 
 	void Awake () {
 		rb = gameObject.GetComponent<Rigidbody2D>();
@@ -57,13 +61,15 @@ public class PlayerController : MonoBehaviour {
 
 		if (Input.GetKeyDown(KeyCode.E) && isInDoor) {
 			// Go to the otherside of door?
-			//UseDoor();
+			EventManager.instnace.RequestDoor(Door);
 		}
 		
 	}
 	
 	// Update is called once per frame
 	void FixedUpdate() {
+		if (!isInDoor && Door != null) Door = null;
+
 		// Set RB Velocity 
 		Vector2 velX = rb.velocity;
 		velX.x = xaxis * speed * Time.deltaTime;
@@ -124,6 +130,8 @@ public class PlayerController : MonoBehaviour {
 
 	void Die() {
 		// Play death particle
+		Instantiate(DeathParticle, gameObject.transform.position, gameObject.transform.rotation);
+
 		rb.velocity = Vector2.zero;
 		jump = false;
 		grounded = false;
@@ -132,6 +140,10 @@ public class PlayerController : MonoBehaviour {
 		transform.localScale = _Scale;
 		facingRight = true;
 		transform.position = currentSpawn.transform.position;
+	}
+
+	void PickUpCoin(GameObject coin) {
+		doubleJump = true;
 	}
 
 	bool PickUpKey(GameObject key) {
@@ -148,8 +160,15 @@ public class PlayerController : MonoBehaviour {
 		Key.GetComponent<Key>().Use();
 	}
 
-	void UseDoor() {
+	public void Move(Transform transform) {
+		jump = false;
+		xaxis = yaxis = 0;
+		rb.velocity = Vector2.zero;
+		gameObject.transform.position = transform.position;
+	}
 
+	public GameObject GetDoor() {
+		return Door;
 	}
 
 	void OnCollisionEnter2D(Collision2D col) {
@@ -162,8 +181,8 @@ public class PlayerController : MonoBehaviour {
 	void OnTriggerEnter2D(Collider2D col) {
 		if (col.gameObject.tag == "Coin") {
 			if (!doubleJump) {
-				doubleJump = true;
-				Destroy(col.gameObject);
+				PickUpCoin(col.gameObject);
+				col.gameObject.GetComponent<Coin>().PickUpCoin();
 			}
 		} else if (col.gameObject.tag == "Key") {
 			if (PickUpKey(col.gameObject)) {
@@ -172,12 +191,14 @@ public class PlayerController : MonoBehaviour {
 			}
 		} else if (col.gameObject.tag == "Door") {
 			isInDoor = true;
+			Door = col.gameObject;
 		}
 	}
 
 	void OnTriggerExit2D(Collider2D col) {
 		if (col.gameObject.tag == "Door") {
 			isInDoor = false;
+			Door = null;
 		}
 	}
 }
