@@ -12,9 +12,9 @@ GameObject:
   - component: {fileID: 118712830575705353}
   - component: {fileID: 2562669073173101775}
   - component: {fileID: 2401460557237750617}
-  m_Layer: 0
+  m_Layer: 17
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -97,9 +97,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animator: {fileID: 0}
   currentSpawn: {fileID: 0}
-  Key: {fileID: 2838220328613658129, guid: 637f494988a553a4a9aaf82ed9739aee, type: 3}
-  GroundCheck: {fileID: 0}
-  KeyHoldPoint: {fileID: 0}
+  Key: {fileID: 0}
+  GroundCheck: {fileID: 7291145436431498915}
+  KeyHoldPoint: {fileID: 4902291194396285085}
   groundLayer:
     serializedVersion: 2
     m_Bits: 256
@@ -107,6 +107,9 @@ MonoBehaviour:
   grounded: 0
   doubleJump: 0
   hasKey: 0
+  isInDoor: 0
+  DeathParticle: {fileID: 1257941437230546445, guid: 993dd72a6a9c7354681bb7cab1421990,
+    type: 3}
 --- !u!1 &1940281637230864
 GameObject:
   m_ObjectHideFlags: 0
@@ -118,7 +121,7 @@ GameObject:
   - component: {fileID: 4799689898425064}
   - component: {fileID: 212985294956588912}
   - component: {fileID: 95900608564609154}
-  m_Layer: 0
+  m_Layer: 17
   m_Name: PlayerSprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}

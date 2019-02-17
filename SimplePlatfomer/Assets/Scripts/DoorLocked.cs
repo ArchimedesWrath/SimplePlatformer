@@ -7,11 +7,22 @@ public class DoorLocked : MonoBehaviour
     public bool playerInDoor = false;
     public GameObject UnlockedDoor;
     public GameObject LinkedDoor;
+    public bool nextSceneDoor = false;
+    public string nextScene;
      
     void SpawnDoor() {
         GameObject _door = Instantiate(UnlockedDoor, transform.position, transform.rotation);
-        _door.GetComponent<Door>().SetLinkedDoor(LinkedDoor);
-        LinkedDoor.GetComponent<Door>().SetLinkedDoor(_door);
+        Door DoorScript = _door.GetComponent<Door>();
+        if (LinkedDoor != null) {
+           DoorScript.SetLinkedDoor(LinkedDoor);
+            LinkedDoor.GetComponent<Door>().SetLinkedDoor(_door);
+        }
+
+        if (nextSceneDoor) {
+            DoorScript.nextSceneDoor = true;
+            DoorScript.nextScene = nextScene;
+        }
+        
         Destroy(gameObject);
     } 
 

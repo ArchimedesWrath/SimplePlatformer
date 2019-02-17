@@ -9,6 +9,7 @@ public class PlayerController : MonoBehaviour {
 	public Transform GroundCheck;
 	public Transform KeyHoldPoint;
 	public LayerMask groundLayer;
+	public LayerMask EnemyLayer;
 	float speed = 250f;
 	float jumpHeight = 500f;
 	public bool jump = false;
@@ -82,11 +83,7 @@ public class PlayerController : MonoBehaviour {
 
 		// Apply Jump
 		if (jump && grounded) {
-			Vector2 velY = rb.velocity;
-			velY.y = jumpHeight * yaxis * Time.deltaTime;
-			rb.velocity = velY;
-			jump = false;
-			grounded = false;
+			Jump();
 		} else if (jump && !grounded && !doubleJump) {
 			jump = false;
 		}
@@ -98,6 +95,22 @@ public class PlayerController : MonoBehaviour {
 		}
 
 		grounded = Physics2D.OverlapCircle(GroundCheck.position, 0.15f, groundLayer);
+	}
+
+	void Jump() {
+		Vector2 velY = rb.velocity;
+		velY.y = jumpHeight * yaxis * Time.deltaTime;
+		rb.velocity = velY;
+		jump = false;
+		grounded = false;
+	}
+
+	void Bounce() {
+		Vector2 velY = rb.velocity;
+		velY.y = jumpHeight * Time.deltaTime;
+		rb.velocity = velY;
+		jump = false;
+		grounded = false;
 	}
 
 	void Flip() {
@@ -130,7 +143,8 @@ public class PlayerController : MonoBehaviour {
 
 	void Die() {
 		// Play death particle
-		Instantiate(DeathParticle, gameObject.transform.position, gameObject.transform.rotation);
+		GameObject effectIns = (GameObject)Instantiate(DeathParticle, gameObject.transform.position, gameObject.transform.rotation);
+		Destroy(effectIns, 2f);
 
 		rb.velocity = Vector2.zero;
 		jump = false;
@@ -175,6 +189,13 @@ public class PlayerController : MonoBehaviour {
 		if (col.gameObject.name == "Spikes") {
 			// TODO: Make some death and spawn Particles.
 			Die();
+		} else if (col.gameObject.tag == "Enemy") {
+			if (Physics2D.OverlapCircle(GroundCheck.transform.position, 0.15f, EnemyLayer)) {
+				Bounce();
+				col.gameObject.GetComponent<EnemyController>().Damage(1);
+			} else {
+				Die();
+			}
 		}
 	}
 

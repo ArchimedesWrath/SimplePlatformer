@@ -6,6 +6,8 @@ public class Door : MonoBehaviour
 {
     public GameObject LinkedDoor;
     public bool playerInDoor;
+    public bool nextSceneDoor = false;
+    public string nextScene;
 
     public void SetLinkedDoor(GameObject door) {
         LinkedDoor = door;
@@ -21,9 +23,5 @@ public class Door : MonoBehaviour
         if (col.gameObject.name == "Player") {
             playerInDoor = false;
         }
-    }
-
-    public void CheckLinkedDoor() {
-
     }
 }

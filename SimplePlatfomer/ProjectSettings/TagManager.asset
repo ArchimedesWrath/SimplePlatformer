@@ -9,6 +9,7 @@ TagManager:
   - Coin
   - Key
   - Door
+  - Enemy
   layers:
   - Default
   - TransparentFX
@@ -20,7 +21,7 @@ TagManager:
   - 
   - Ground
   - Door
-  - 
+  - Enemy
   - 
   - 
   - 

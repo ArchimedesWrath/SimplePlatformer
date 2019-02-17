@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4183309547621556}
   - component: {fileID: 61281693037515098}
   - component: {fileID: 2351606227116991303}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Door
   m_TagString: Door
   m_Icon: {fileID: 0}
@@ -71,6 +71,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8af7d720fc9740478e12407b64c2fee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  LinkedDoor: {fileID: 0}
   playerInDoor: 0
 --- !u!1 &1607602848576194
 GameObject:
@@ -82,7 +83,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4667130142897422}
   - component: {fileID: 212224996718641440}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: DoorSprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}

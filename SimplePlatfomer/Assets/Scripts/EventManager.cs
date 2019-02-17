@@ -20,8 +20,15 @@ public class EventManager : MonoBehaviour
     }
 
     public void RequestDoor(GameObject door) {
+        Door DoorScript = door.GetComponent<Door>();
         if (PlayerController.isInDoor && PlayerController.GetDoor() != null) {
-            PlayerController.Move(door.GetComponent<Door>().LinkedDoor.transform);
+            if (DoorScript.nextSceneDoor) {
+                // Reqeust next scene from SceneManager
+                Debug.Log("Requesting to change to scene: " + DoorScript.nextScene);
+                SceneManagerScript.instance.RequestNextScene(DoorScript.nextScene);
+            } else {
+                PlayerController.Move(DoorScript.LinkedDoor.transform);
+            }
         }
     }
 }

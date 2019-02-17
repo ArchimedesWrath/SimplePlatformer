@@ -6,10 +6,11 @@ public class Coin : MonoBehaviour
 {
     public GameObject CoinSprite;
     public GameObject PickUpParticle;
+    public bool canRespawn = true;
     GameObject childCoin;
     int spawnTimer;
     int SPAWNTIME = 200;
-    bool canRespawn = true;
+    
     void Start() {
         childCoin = gameObject.transform.GetChild(0).gameObject;
         spawnTimer = SPAWNTIME;
@@ -26,8 +27,16 @@ public class Coin : MonoBehaviour
     }
 
     public void PickUpCoin() {
-        Destroy(childCoin);
-        Instantiate(PickUpParticle, transform.position, transform.rotation);
+        if (canRespawn) {
+            Destroy(childCoin);
+            GameObject effectIns = (GameObject)Instantiate(PickUpParticle, transform.position, transform.rotation);
+            Destroy(effectIns, 2f);
+        } else {
+            Destroy(gameObject);
+            GameObject effectIns = (GameObject)Instantiate(PickUpParticle, transform.position, transform.rotation);
+            Destroy(effectIns, 2f);
+        }
+        
     }
 
     void SpawnCoin() {
