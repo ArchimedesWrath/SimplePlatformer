@@ -169,6 +169,10 @@ public class PlayerController : MonoBehaviour {
 		}
 	}
 
+	void SetCheckPoint(GameObject checkpoint) {
+		currentSpawn = checkpoint;
+	}
+
 	public void UseKey() {
 		hasKey = false;
 		Key.GetComponent<Key>().Use();
@@ -213,6 +217,8 @@ public class PlayerController : MonoBehaviour {
 		} else if (col.gameObject.tag == "Door") {
 			isInDoor = true;
 			Door = col.gameObject;
+		} else if (col.gameObject.tag == "Checkpoint") {
+			SetCheckPoint(col.gameObject);
 		}
 	}
 
